@@ -24,6 +24,10 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
     },
     copy: {
       patterns: [
+        {
+          from: 'cloudfunctions',
+          to: 'cloudfunctions'
+        }
       ],
       options: {
       }
@@ -45,7 +49,7 @@ export default defineConfig<'vite'>(async (merge, { command, mode }) => {
             generateScopedName: '[name]__[local]___[hash:base64:5]'
           }
         }
-      },
+      }
     },
     h5: {
       publicPath: '/',

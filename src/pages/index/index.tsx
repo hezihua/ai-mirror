@@ -15,6 +15,22 @@ const Index = () => {
 
 
 
+  // 将本地图片转换为base64
+  const imageToBase64 = useCallback((filePath: string): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      Taro.getFileSystemManager().readFile({
+        filePath,
+        encoding: 'base64',
+        success: (res) => {
+          resolve(`data:image/jpeg;base64,${res.data}`);
+        },
+        fail: (error) => {
+          reject(error);
+        }
+      });
+    });
+  }, []);
+
   const handleGenerate = useCallback(async () => {
     if (!clothesImage || !personImage) {
       show({ title: "请上传衣服和人像图片" });
@@ -25,34 +41,36 @@ const Index = () => {
     show({ title: "正在生成试衣效果..." });
 
     try {
-      // 这里调用第三方AI试衣API
-      // 注意：实际使用时需要替换为真实的API调用
-      
-      // 1. 首先需要将本地图片上传到服务器获取可访问的URL
-      // 2. 然后调用AI试衣API进行图片合成
-      // 3. 最后获取生成的结果图片URL
-      
-      // 模拟API调用过程
-      console.log('开始调用AI试衣API');
-      console.log('衣服图片:', clothesImage);
-      console.log('人像图片:', personImage);
-      
-      // 模拟API调用延迟
-      await new Promise(resolve => setTimeout(resolve, 3000));
-      
-      // 模拟生成结果
-      // 实际项目中，这里应该是API返回的生成图片URL
-      setResultImage(personImage);
-      
-      show({ title: "生成成功" });
-      console.log('生成成功');
+      console.log('开始将图片转换为base64');
+      const clothesBase64 = await imageToBase64(clothesImage);
+      const personBase64 = await imageToBase64(personImage);
+      console.log('图片转换完成');
+
+      console.log('开始调用云函数');
+      const result = await Taro.cloud.callFunction({
+        name: 'callHunyuanAPI',
+        data: {
+          clothesImage: clothesBase64,
+          personImage: personBase64
+        }
+      });
+
+      console.log('云函数响应:', result);
+
+      if (result.result && result.result.success && result.result.data && result.result.data.imageUrl) {
+        setResultImage(result.result.data.imageUrl);
+        show({ title: "生成成功" });
+        console.log('生成成功');
+      } else {
+        throw new Error(result.result?.error || '生成失败');
+      }
     } catch (error) {
       show({ title: "生成失败，请重试" });
       console.error('生成失败:', error);
     } finally {
       setLoading(false);
     }
-  }, [clothesImage, personImage, show]);
+  }, [clothesImage, personImage, show, imageToBase64]);
 
   return (
     <View className="wrapper">

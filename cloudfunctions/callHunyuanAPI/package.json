@@ -1,0 +1,12 @@
+{
+  "name": "callHunyuanAPI",
+  "version": "1.0.0",
+  "description": "调用混元AI API",
+  "main": "index.js",
+  "scripts": {
+    "deploy": "wx cloud deploy"
+  },
+  "dependencies": {
+    "wx-server-sdk": "latest"
+  }
+}
