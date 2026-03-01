@@ -2,8 +2,6 @@ import { Component } from 'react'
 import Taro from '@tarojs/taro'
 import type { PropsWithChildren } from 'react'
 
-import './app.less'
-
 class App extends Component<PropsWithChildren> {
 
   componentDidMount() {

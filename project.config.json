@@ -1,8 +1,9 @@
 {
   "miniprogramRoot": "dist/",
+  "cloudfunctionRoot": "cloudfunctions/",
   "projectname": "ai-mirror",
   "description": "AI Mirror 小程序",
-  "appid": "touristappid",
+  "appid": "wx1dbf67b7eca30b66",
   "setting": {
     "urlCheck": true,
     "es6": false,
